@@ -56,17 +56,30 @@ function App() {
   };
   const handleSubmit=async(e)=>{
   e.preventDefault();
-  if(userData.id){
-    await axios.patch(`http://localhost:8000/users/${userData.id}`,userData).then((res)=>{
-    });
-  }else{
-   await axios.post("http://localhost:8000/users",userData).then((res)=>{
-   });
+  const {name,age,city,state}= userData
+  if (name && age && city && state) {
+    if (!isNaN(age) && age > 0) {
+      try {
+        if (userData.id) {
+          await axios.patch(`http://localhost:8000/users/${userData.id}`, userData);
+        } else {
+          await axios.post("http://localhost:8000/users", userData);
+        }
+        closeModal();
+      } catch (error) {
+        console.error("Error submitting user data:", error);
+      }
+    } else {
+      alert("Age must be a positive number.");
+    }
+  } else {
+    alert("All fields must be filled out.");
   }
-  closeModal();
-  setUserData({ name: "", age: "", city: "", state:""});
-  };
-  const handleUpdateRecord= (user)=>{
+
+  setUserData({ name: "", age: "", city: "", state: "" });
+};
+
+const handleUpdateRecord= (user)=>{
 setUserData(user);
 setIsModleOpen(true);
   }
